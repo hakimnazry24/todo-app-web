@@ -3,10 +3,27 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 1 of 33 steps complete. Next up: step 2 (VPC, console).**
+**Status: 2 of 33 steps complete. Next up: step 3 (app fixes).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
+
+Built so far (all in `us-west-2`, all $0 until something runs):
+
+| Resource | Id |
+| --- | --- |
+| VPC `todo-vpc` `10.0.0.0/16` | `vpc-0375f6e16ec3551b4` |
+| Subnet `todo-public-a` `10.0.1.0/24` us-west-2a | `subnet-0a3e98a840a3e3aea` |
+| Subnet `todo-public-b` `10.0.2.0/24` us-west-2b | `subnet-0ba9912f4c1ad5166` |
+| IGW `todo-igw` | `igw-0d897bc7768f03bc8` |
+| Route table `todo-public-rt` | `rtb-0f76bb6987cf5924e` |
+| SG `todo-alb-sg` (:80 from 0.0.0.0/0) | `sg-0df4e3784d0736f77` |
+| SG `todo-ecs-sg` (:80 from alb-sg) | `sg-049ccb05e4f5602c4` |
+| SG `todo-rds-sg` (:5432 from ecs-sg) | `sg-074d37cb198b7b54f` |
+
+No NAT gateway by design — tasks get public IPs in public subnets instead,
+saving ~$32/month. `delivery-infra` uses private subnets + NAT; compare
+`modules/vpc` against this when writing the Terraform at step 4.
 
 ---
 
@@ -51,7 +68,7 @@ pauses until the feature is finished.
 ## Block A — Account & network
 
 - [x] **1.** 🔧 AWS account: budget alarm, IAM admin + MFA, CLI. Console only — 45m
-- [ ] **2.** 🔧 VPC by hand: 2 public subnets across 2 AZs, IGW, route table, security groups — 90m
+- [x] **2.** 🔧 VPC by hand: 2 public subnets across 2 AZs, IGW, route table, security groups — 90m
 - [ ] **3.** 💻 App fixes: nginx `proxy_pass` → `127.0.0.1:3000`, log colors, `trust proxy` — 30m
 - [ ] **4.** 🔧 Create `todo-infra` repo (with `docs/`), rewrite the VPC as Terraform — 90m
 - [ ] **5.** 🔧 `destroy` then `apply` — prove it's reproducible — 20m
