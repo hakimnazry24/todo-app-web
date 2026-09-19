@@ -3,7 +3,10 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 0 of 33 steps complete. Next up: step 1.**
+**Status: 1 of 33 steps complete. Next up: step 2 (VPC, console).**
+
+Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
+On the legacy 12-month free tier, so RDS should be free at step 8.
 
 ---
 
@@ -47,7 +50,7 @@ pauses until the feature is finished.
 
 ## Block A — Account & network
 
-- [ ] **1.** 🔧 AWS account: budget alarm, IAM admin + MFA, CLI. Console only — 45m
+- [x] **1.** 🔧 AWS account: budget alarm, IAM admin + MFA, CLI. Console only — 45m
 - [ ] **2.** 🔧 VPC by hand: 2 public subnets across 2 AZs, IGW, route table, security groups — 90m
 - [ ] **3.** 💻 App fixes: nginx `proxy_pass` → `127.0.0.1:3000`, log colors, `trust proxy` — 30m
 - [ ] **4.** 🔧 Create `todo-infra` repo (with `docs/`), rewrite the VPC as Terraform — 90m
@@ -110,6 +113,10 @@ pauses until the feature is finished.
 
 - **Step 22 needs a domain.** Not yet chosen. If there isn't one, a Route 53
   registration is ~$12/year. Decide by step 20.
+- **Pre-existing EC2 instance.** `i-034e0057075982dbe` (`t3.small`,
+  `moniteer-innutrire`, `ap-southeast-5`, running since 2026-06-23) costs roughly
+  $20-25/month and will trip the $20 budget on its own. Unrelated to this
+  project — leave / stop / terminate is Hakim's call, untouched so far.
 
 ## Services covered
 
