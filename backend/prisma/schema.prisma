@@ -1,0 +1,62 @@
+// ToDo — data model
+// Docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id           String    @id @default(uuid()) @db.Uuid
+  username     String    @unique
+  passwordHash String    @map("password_hash")
+  phoneNumber  String    @map("phone_number")
+  createdAt    DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  sessions Session[]
+  tasks    Task[]
+
+  @@map("users")
+}
+
+/// One row per successful login. The row id is the `sid` claim carried by the
+/// JWT and is re-checked on every authenticated request, so logging out
+/// (setting revokedAt) invalidates a token that has not expired yet.
+model Session {
+  id        String    @id @default(uuid()) @db.Uuid
+  userId    String    @map("user_id") @db.Uuid
+  expiresAt DateTime  @map("expires_at") @db.Timestamptz(3)
+  revokedAt DateTime? @map("revoked_at") @db.Timestamptz(3)
+  createdAt DateTime  @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+  @@map("sessions")
+}
+
+enum TaskStatus {
+  PENDING
+  COMPLETED
+
+  @@map("task_status")
+}
+
+model Task {
+  id          String     @id @default(uuid()) @db.Uuid
+  userId      String     @map("user_id") @db.Uuid
+  name        String
+  description String
+  status      TaskStatus @default(PENDING)
+  completedAt DateTime?  @map("completed_at") @db.Timestamptz(3)
+  createdAt   DateTime   @default(now()) @map("created_at") @db.Timestamptz(3)
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, status])
+  @@map("tasks")
+}
