@@ -5,20 +5,17 @@ server {
     root /usr/share/nginx/html;
     index index.html;
 
-    # Client-side routing: /login, /signup and /tasks are all served by the SPA.
     location / {
         try_files $uri $uri/ /index.html;
     }
 
-    # Hashed build assets never change under the same name.
     location /assets/ {
         expires 1y;
         add_header Cache-Control "public, immutable";
     }
 
-    # Same-origin API so the browser needs no CORS preflight.
     location /api/ {
-        proxy_pass http://backend:3000;
+        proxy_pass http://${API_UPSTREAM};
         proxy_http_version 1.1;
         proxy_set_header Host $host;
         proxy_set_header X-Real-IP $remote_addr;
