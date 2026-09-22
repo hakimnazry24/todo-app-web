@@ -3,7 +3,7 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 4 of 33 steps complete. Next up: step 5 (destroy + apply, prove reproducibility).**
+**Status: 5 of 33 steps complete. Block A done. Next up: step 6 (ECR console + push images).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
@@ -14,12 +14,15 @@ Everything below is now managed by Terraform in `hakimnazry24/todo-infra`
 
 | Resource | Id |
 | --- | --- |
-| VPC `todo-dev-vpc` `10.0.0.0/16` | `vpc-0c43a2715570e4497` |
-| Subnet `todo-dev-public-a` `10.0.1.0/24` us-west-2a | (see `terraform output`) |
-| Subnet `todo-dev-public-b` `10.0.2.0/24` us-west-2b | (see `terraform output`) |
-| SG `todo-dev-alb-sg` (:80 from 0.0.0.0/0) | `sg-0e12b56172d5cf30c` |
-| SG `todo-dev-ecs-sg` (:80 from alb-sg) | `sg-0eb980eeaf5aa972c` |
-| SG `todo-dev-rds-sg` (:5432 from ecs-sg) | `sg-0e68bbc6e81b846f2` |
+| VPC `todo-dev-vpc` | `10.0.0.0/16` |
+| Subnet `todo-dev-public-a` | `10.0.1.0/24`, us-west-2a, auto public IP |
+| Subnet `todo-dev-public-b` | `10.0.2.0/24`, us-west-2b, auto public IP |
+| SG `todo-dev-alb-sg` | :80 from `0.0.0.0/0` |
+| SG `todo-dev-ecs-sg` | :80 from alb-sg |
+| SG `todo-dev-rds-sg` | :5432 from ecs-sg |
+
+Resource IDs are deliberately NOT recorded here — step 5 proved they change on
+every destroy/apply. Run `terraform state list` or query AWS by Name tag.
 
 Terraform state is LOCAL (`live/dev/us-west-2/terraform.tfstate`, gitignored)
 until step 32 moves it to S3. Losing that file means Terraform forgets these
@@ -75,7 +78,7 @@ pauses until the feature is finished.
 - [x] **2.** 🔧 VPC by hand: 2 public subnets across 2 AZs, IGW, route table, security groups — 90m
 - [x] **3.** 💻 App fixes: nginx `proxy_pass` → `127.0.0.1:3000`, log colors, `trust proxy` — 30m
 - [x] **4.** 🔧 Create `todo-infra` repo (with `docs/`), rewrite the VPC as Terraform — 90m
-- [ ] **5.** 🔧 `destroy` then `apply` — prove it's reproducible — 20m
+- [x] **5.** 🔧 `destroy` then `apply` — prove it's reproducible — 20m
 
 ## Block B — Images & database
 
