@@ -3,27 +3,31 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 3 of 33 steps complete. Next up: step 4 (todo-infra repo + VPC as Terraform).**
+**Status: 4 of 33 steps complete. Next up: step 5 (destroy + apply, prove reproducibility).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
 
-Built so far (all in `us-west-2`, all $0 until something runs):
+Built so far (all in `us-west-2`, all $0 until something runs).
+Everything below is now managed by Terraform in `hakimnazry24/todo-infra`
+(`live/dev/us-west-2`) — the console is for looking, Terraform for changing.
 
 | Resource | Id |
 | --- | --- |
-| VPC `todo-vpc` `10.0.0.0/16` | `vpc-0375f6e16ec3551b4` |
-| Subnet `todo-public-a` `10.0.1.0/24` us-west-2a | `subnet-0a3e98a840a3e3aea` |
-| Subnet `todo-public-b` `10.0.2.0/24` us-west-2b | `subnet-0ba9912f4c1ad5166` |
-| IGW `todo-igw` | `igw-0d897bc7768f03bc8` |
-| Route table `todo-public-rt` | `rtb-0f76bb6987cf5924e` |
-| SG `todo-alb-sg` (:80 from 0.0.0.0/0) | `sg-0df4e3784d0736f77` |
-| SG `todo-ecs-sg` (:80 from alb-sg) | `sg-049ccb05e4f5602c4` |
-| SG `todo-rds-sg` (:5432 from ecs-sg) | `sg-074d37cb198b7b54f` |
+| VPC `todo-dev-vpc` `10.0.0.0/16` | `vpc-0c43a2715570e4497` |
+| Subnet `todo-dev-public-a` `10.0.1.0/24` us-west-2a | (see `terraform output`) |
+| Subnet `todo-dev-public-b` `10.0.2.0/24` us-west-2b | (see `terraform output`) |
+| SG `todo-dev-alb-sg` (:80 from 0.0.0.0/0) | `sg-0e12b56172d5cf30c` |
+| SG `todo-dev-ecs-sg` (:80 from alb-sg) | `sg-0eb980eeaf5aa972c` |
+| SG `todo-dev-rds-sg` (:5432 from ecs-sg) | `sg-0e68bbc6e81b846f2` |
+
+Terraform state is LOCAL (`live/dev/us-west-2/terraform.tfstate`, gitignored)
+until step 32 moves it to S3. Losing that file means Terraform forgets these
+resources exist.
 
 No NAT gateway by design — tasks get public IPs in public subnets instead,
 saving ~$32/month. `delivery-infra` uses private subnets + NAT; compare
-`modules/vpc` against this when writing the Terraform at step 4.
+`delivery-infra/modules/vpc` against `todo-infra/modules/vpc` to see the gap.
 
 ---
 
@@ -70,7 +74,7 @@ pauses until the feature is finished.
 - [x] **1.** 🔧 AWS account: budget alarm, IAM admin + MFA, CLI. Console only — 45m
 - [x] **2.** 🔧 VPC by hand: 2 public subnets across 2 AZs, IGW, route table, security groups — 90m
 - [x] **3.** 💻 App fixes: nginx `proxy_pass` → `127.0.0.1:3000`, log colors, `trust proxy` — 30m
-- [ ] **4.** 🔧 Create `todo-infra` repo (with `docs/`), rewrite the VPC as Terraform — 90m
+- [x] **4.** 🔧 Create `todo-infra` repo (with `docs/`), rewrite the VPC as Terraform — 90m
 - [ ] **5.** 🔧 `destroy` then `apply` — prove it's reproducible — 20m
 
 ## Block B — Images & database
@@ -130,10 +134,9 @@ pauses until the feature is finished.
 
 - **Step 22 needs a domain.** Not yet chosen. If there isn't one, a Route 53
   registration is ~$12/year. Decide by step 20.
-- **Pre-existing EC2 instance.** `i-034e0057075982dbe` (`t3.small`,
-  `moniteer-innutrire`, `ap-southeast-5`, running since 2026-06-23) costs roughly
-  $20-25/month and will trip the $20 budget on its own. Unrelated to this
-  project — leave / stop / terminate is Hakim's call, untouched so far.
+- **RESOLVED — pre-existing EC2 instance.** `i-034e0057075982dbe` (`t3.small`,
+  `ap-southeast-5`) is a client project, deliberately left running. It accounts
+  for roughly $20-25/month of the budget alert on its own. Do not flag it again.
 
 ## Services covered
 
