@@ -3,7 +3,7 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 6 of 33 steps complete. Next up: step 7 (ECR in Terraform).**
+**Status: 7 of 33 steps complete. Next up: step 8 (RDS console).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
@@ -30,7 +30,7 @@ resources exist.
 
 ECR repos are `todo/backend` and `todo/frontend`. Images must be built with
 `--platform linux/amd64` (Fargate's default) — the Mac is `arm64`. Step 6's
-console repos were deleted; step 7 recreates them in Terraform.
+console repos were deleted; step 7 recreated them in Terraform (immutable tags, scan on push, `force_delete` so destroy works with images inside).
 
 No NAT gateway by design — tasks get public IPs in public subnets instead,
 saving ~$32/month. `delivery-infra` uses private subnets + NAT; compare
@@ -87,7 +87,7 @@ pauses until the feature is finished.
 ## Block B — Images & database
 
 - [x] **6.** 🔧 ECR console: repo, then build/tag/push both images — 45m
-- [ ] **7.** 🔧 ECR in Terraform — 30m
+- [x] **7.** 🔧 ECR in Terraform — 30m
 - [ ] **8.** 🔧 RDS console: subnet group, security group, `db.t4g.micro` — 75m
 - [ ] **9.** 🔧 RDS in Terraform — 60m
 - [ ] **10.** 💻 Split `prisma migrate deploy` out of the entrypoint — 45m
