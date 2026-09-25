@@ -3,7 +3,7 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 5 of 33 steps complete. Block A done. Next up: step 6 (ECR console + push images).**
+**Status: 6 of 33 steps complete. Next up: step 7 (ECR in Terraform).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
@@ -27,6 +27,10 @@ every destroy/apply. Run `terraform state list` or query AWS by Name tag.
 Terraform state is LOCAL (`live/dev/us-west-2/terraform.tfstate`, gitignored)
 until step 32 moves it to S3. Losing that file means Terraform forgets these
 resources exist.
+
+ECR repos are `todo/backend` and `todo/frontend`. Images must be built with
+`--platform linux/amd64` (Fargate's default) — the Mac is `arm64`. Step 6's
+console repos were deleted; step 7 recreates them in Terraform.
 
 No NAT gateway by design — tasks get public IPs in public subnets instead,
 saving ~$32/month. `delivery-infra` uses private subnets + NAT; compare
@@ -82,7 +86,7 @@ pauses until the feature is finished.
 
 ## Block B — Images & database
 
-- [ ] **6.** 🔧 ECR console: repo, then build/tag/push both images — 45m
+- [x] **6.** 🔧 ECR console: repo, then build/tag/push both images — 45m
 - [ ] **7.** 🔧 ECR in Terraform — 30m
 - [ ] **8.** 🔧 RDS console: subnet group, security group, `db.t4g.micro` — 75m
 - [ ] **9.** 🔧 RDS in Terraform — 60m
