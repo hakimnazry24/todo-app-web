@@ -3,7 +3,7 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 7 of 33 steps complete. Next up: step 8 (RDS console).**
+**Status: 8 of 33 steps complete. Next up: step 9 (RDS in Terraform).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
@@ -88,7 +88,7 @@ pauses until the feature is finished.
 
 - [x] **6.** 🔧 ECR console: repo, then build/tag/push both images — 45m
 - [x] **7.** 🔧 ECR in Terraform — 30m
-- [ ] **8.** 🔧 RDS console: subnet group, security group, `db.t4g.micro` — 75m
+- [x] **8.** 🔧 RDS console: subnet group, security group, `db.t4g.micro` — 75m
 - [ ] **9.** 🔧 RDS in Terraform — 60m
 - [ ] **10.** 💻 Split `prisma migrate deploy` out of the entrypoint — 45m
 
