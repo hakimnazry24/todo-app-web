@@ -28,11 +28,8 @@ COPY --from=build /app/node_modules ./node_modules
 COPY --from=build /app/dist ./dist
 COPY --from=build /app/prisma ./prisma
 COPY package*.json ./
-COPY docker-entrypoint.sh ./
-RUN chmod +x docker-entrypoint.sh
 
 USER node
 EXPOSE 3000
 
-# Applies pending migrations, then starts the API.
-ENTRYPOINT ["./docker-entrypoint.sh"]
+CMD ["node", "dist/main.js"]

@@ -18,14 +18,25 @@ services:
       timeout: 5s
       retries: 10
 
+  migrate:
+    build:
+      context: ./backend
+    container_name: todo-migrate
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      DATABASE_URL: postgresql://${POSTGRES_USER:-todo}:${POSTGRES_PASSWORD:-todo_password}@postgres:5432/${POSTGRES_DB:-todo}?schema=public
+    command: ["npx", "prisma", "migrate", "deploy"]
+
   backend:
     build:
       context: ./backend
     container_name: todo-backend
     restart: unless-stopped
     depends_on:
-      postgres:
-        condition: service_healthy
+      migrate:
+        condition: service_completed_successfully
     environment:
       NODE_ENV: production
       PORT: 3000

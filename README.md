@@ -27,9 +27,9 @@ docker compose up --build
 | API      | http://localhost:3000/api |
 | Postgres | localhost:5432          |
 
-The backend container applies `prisma migrate deploy` before it starts, so the
-schema is created on first boot. Data lives in the `postgres_data` volume and
-survives `docker compose down`; `docker compose down -v` wipes it.
+A one-off `migrate` service applies `prisma migrate deploy` before the backend
+starts, so the schema is created on first boot. Data lives in the `postgres_data`
+volume and survives `docker compose down`; `docker compose down -v` wipes it.
 
 ## Run it locally for development
 
