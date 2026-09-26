@@ -3,7 +3,7 @@
 Learning the AWS services used by the work repo `delivery-infra` by deploying the
 ToDo app onto the same services. Covers 16 of delivery-infra's 17 services.
 
-**Status: 10 of 33 steps complete. Block B done. Next up: step 11 (IAM console: task execution role vs task role).**
+**Status: 11 of 33 steps complete. Next up: step 12 (IAM in Terraform).**
 
 Account `221082178177`, IAM user `hakim-admin`, region `us-west-2`.
 On the legacy 12-month free tier, so RDS should be free at step 8.
@@ -94,7 +94,7 @@ pauses until the feature is finished.
 
 ## Block C — Identity & config
 
-- [ ] **11.** 🔧 IAM console: task execution role vs task role, and why they differ — 60m
+- [x] **11.** 🔧 IAM console: task execution role vs task role, and why they differ — 60m
 - [ ] **12.** 🔧 IAM in Terraform — 45m
 - [ ] **13.** 🔧 SSM Parameter Store + Secrets Manager, console — 45m
 - [ ] **14.** 🔧 SSM + Secrets in Terraform — 45m
